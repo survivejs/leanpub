@@ -149,7 +149,7 @@ They can be created through `POST`:
 ...
 
 client.createCoupon({
-  couponCode: 'test coupon', // required
+  couponCode: 'testcoupon', // required
   packageDiscounts: [ // required
     {
       discountedPrice: 10,
@@ -170,7 +170,7 @@ And updated through `PUT`:
 ...
 
 client.updateCoupon({
-  couponCode: 'test coupon', // required
+  couponCode: 'testcoupon', // required
   suspended: true
 }, cb);
 ```
