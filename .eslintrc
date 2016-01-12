@@ -9,6 +9,10 @@
   /**
    * Overrides as needed
    */
+  "env": {
+    "node": true,
+    "mocha": true
+  },
   "rules": {
     "func-names": 0,
     "comma-dangle": [2, "never"],
@@ -20,5 +24,8 @@
     // http://eslint.org/docs/rules/no-unused-vars.html
     "no-unused-vars": [1, {"vars": "all", "args": "after-used"}],
     "padded-blocks": [0, "always"],
+  },
+  "ecmaFeatures": {
+    "blockBindings": true
   }
 }
