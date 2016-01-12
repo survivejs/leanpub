@@ -1,0 +1,32 @@
+{
+  "name": "leanpub",
+  "description": "Simple client for Leanpub API",
+  "author": "Juho Vepsalainen <bebraw@gmail.com>",
+  "version": "0.0.0",
+  "scripts": {
+    "test": "mocha ./test",
+    "lint": "eslint .",
+    "watch:test": "mocha ./test --watch",
+    "preversion": "npm run lint && npm test && git commit --allow-empty -am \"Update lib\""
+  },
+  "main": "./index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^2.1.1",
+    "mocha": "^2.2.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/survivejs/leanpub.git"
+  },
+  "homepage": "https://github.com/survivejs/leanpub",
+  "bugs": {
+    "url": "https://github.com/survivejs/leanpub/issues"
+  },
+  "keywords": [
+    "leanpub",
+    "client"
+  ],
+  "license": "MIT"
+}
