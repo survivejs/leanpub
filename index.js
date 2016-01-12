@@ -1,3 +1,6 @@
+var request = require('request');
+var moment = require('moment');
+
 module.exports = function(o) {
   const apiKey = o.apiKey;
   const bookSlug = o.bookSlug;
@@ -6,27 +9,32 @@ module.exports = function(o) {
     throw new Error('Missing `bookSlug`!');
   }
 
+  const urlRoot = 'https://leanpub.com/' + bookSlug;
+
   return {
     previewFull: function (cb) {
-      cb(new Error('Not implemented yet!'));
+      req('get', '/preview.json', {}, cb);
     },
     previewSubset: function (cb) {
-      cb(new Error('Not implemented yet!'));
+      req('get', '/preview/subset.json', {}, cb);
     },
     publish: function (o, cb) {
-      if(!o) {
-        return cb(new Error('Not implemented yet!'));
+      if(!cb) {
+        return req('post', '/publish.json', {}, o);
       }
 
       const releaseNotes = o.releaseNotes || '';
 
-      cb(new Error('Not implemented yet!'));
+      req('post', '/publish.json', {
+        'publish[email_readers]': true,
+        'publish[release_notes]': releaseNotes
+      }, cb);
     },
     jobStatus: function (cb) {
-      cb(new Error('Not implemented yet!'));
+      req('get', '/book_status', {}, cb);
     },
     bookSummary: function (cb) {
-      cb(new Error('Not implemented yet!'));
+      req('get', '.json', {}, cb);
     },
     latestVersion: function (o, cb) {
       const format = o.format;
@@ -43,31 +51,32 @@ module.exports = function(o) {
       cb(new Error('Not implemented yet!'));
     },
     sales: function (o, cb) {
-      const format = o.format || 'json';
-
       if(!cb) {
-        return o(new Error('Not implemented yet!'));
+        return req('get', '/sales.json', {}, o);
       }
 
-      cb(new Error('Not implemented yet!'));
+      const format = o.format || 'json';
+
+      req('get', '/sales.' + format, {}, cb);
     },
     individualSales: function (o, cb) {
-      if(!o) {
-        return cb(new Error('Not implemented yet!'));
+      if(!cb) {
+        return req('get', '/individual_purchases.json', {}, o);
       }
 
+      const format = o.format || 'json';
       const page = o.page || 1;
 
-      cb(new Error('Not implemented yet!'));
+      req('get', '/individual_purchases.' + format + '?page=' + page, {}, cb);
     },
     coupons: function (o, cb) {
-      const format = o.format || 'json';
-
       if(!cb) {
-        return o(new Error('Not implemented yet!'));
+        return req('get', '/coupons.json', {}, o);
       }
 
-      cb(new Error('Not implemented yet!'));
+      const format = o.format || 'json';
+
+      req('get', '/coupons.' + format, {}, cb);
     },
     createCoupon: function (o, cb) {
       const couponCode = o.couponCode;
@@ -99,10 +108,83 @@ module.exports = function(o) {
         return cb(new Error('Missing `maxUses`'));
       }
 
-      cb(new Error('Not implemented yet!'));
+      req('post', '/coupons.json', {
+        'coupon_code': couponCode,
+        'package_discounts_attributes': toUnderscore(packageDiscounts),
+        'start_date': moment(startDate).format('YYYYMMDD'),
+        'end_date': moment(endDate).format('YYYYMMDD'),
+        'max_uses': maxUses,
+        'note': note,
+        'suspended': suspended
+      }, cb);
     },
     updateCoupon: function (o, cb) {
-      cb(new Error('Not implemented yet!'));
+      const couponCode = o.couponCode;
+      const packageDiscounts = o.packageDiscounts;
+      const startDate = o.startDate;
+      const endDate = o.endDate;
+      const maxUses = o.maxUses;
+      const note = o.note;
+      const suspended = o.suspended;
+      const body = {};
+
+      // TODO: tidy up this logic
+      if(!couponCode) {
+        return cb(new Error('Missing `couponCode`'));
+      }
+
+      if(packageDiscounts) {
+        body['package_discounts_attributes'] = toUnderscore(packageDiscounts);
+      }
+
+      if(startDate) {
+        body['start_date'] = moment(startDate).format('YYYYMMDD');
+      }
+
+      if(endDate) {
+        body['end_date'] = moment(endDate).format('YYYYMMDD');
+      }
+
+      if(maxUses) {
+        body['max_uses'] = maxUses;
+      }
+
+      if(note) {
+        body['note'] = note;
+      }
+
+      if(suspended) {
+        body['suspended'] = suspended;
+      }
+
+      req('put', '/coupons/' + couponCode + '.json', body, cb);
     }
   };
+
+  function toUnderscore(discounts) {
+    return (discounts || []).map(function(discount) {
+      return {
+        'discounted_price': discount.discountedPrice,
+        'package_slug': discount.packageSlug
+      };
+    });
+  }
+
+  function req(method, resource, body, cb) {
+    request({
+      method: method,
+      url: urlRoot + resource,
+      qs: {
+        'api_key': apiKey
+      },
+      body: body,
+      json: true
+    }, function (err, d) {
+      if(err) {
+        return cb(err);
+      }
+
+      cb(null, d.body);
+    });
+  }
 };

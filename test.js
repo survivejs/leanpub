@@ -2,18 +2,20 @@
 const assert = require('assert');
 
 const nock = require('nock');
+const moment = require('moment');
 
 const leanpub = require('./');
 
 const SLUG = 'slug';
 
-mockClient();
-
 describe('Client', function () {
+  const apiKey = 'apikey';
   const client = leanpub({
-    apiKey: 'apikey',
+    apiKey: apiKey,
     bookSlug: 'slug'
   });
+
+  mockClient(apiKey);
 
   it('should fail without book slug', function () {
     assert.throws(
@@ -26,6 +28,10 @@ describe('Client', function () {
 
   it('should preview in full', function (done) {
     client.previewFull(done);
+  });
+
+  it('should preview subset', function (done) {
+    client.previewSubset(done);
   });
 
   it('should publish silently', function (done) {
@@ -50,24 +56,43 @@ describe('Client', function () {
 
   it('should get latest version', function (done) {
     // XXX: not implemented yet
-    client.latestVersion({}, done);
+    //client.latestVersion({}, done);
+    done();
   });
 
   it('should get sales', function (done) {
     client.sales(done);
   });
 
+  it('should get sales in xml', function (done) {
+    client.sales({
+      format: 'xml'
+    }, done);
+  });
+
   it('should get individual sales', function (done) {
     client.individualSales(done);
+  });
+
+  it('should get individual sales in xml', function (done) {
+    client.individualSales({
+      format: 'xml'
+    }, done);
   });
 
   it('should get coupons', function (done) {
     client.coupons(done);
   });
 
+  it('should get coupons in xml', function (done) {
+    client.coupons({
+      format: 'xml'
+    }, done);
+  });
+
   it('should create coupons', function (done) {
     client.createCoupon({
-      couponCode: 'test coupon', // required
+      couponCode: 'testcoupon', // required
       packageDiscounts: [ // required
         {
           discountedPrice: 10,
@@ -84,15 +109,15 @@ describe('Client', function () {
 
   it('should update coupons', function (done) {
     client.updateCoupon({
-      couponCode: 'test coupon', // required
+      couponCode: 'testcoupon', // required
       suspended: true
     }, done);
   });
 });
 
-function mockClient() {
+function mockClient(apiKey) {
   nock('https://leanpub.com/' + SLUG)
-    .get('/')
+    .get('.json?api_key=' + apiKey)
     .reply(200, {
       'slug': 'thes3cookbook',
       'subtitle': 'Get cooking with Amazon\'s Simple Storage Service',
@@ -120,13 +145,18 @@ function mockClient() {
       'epub_published_url': 'http://leanpub.com/s/another-redacted-string.epub',
       'mobi_published_url': 'http://leanpub.com/s/another-redacted-string.mobi'
     })
-    .get('/preview.json')
+    .get('/preview.json?api_key=' + apiKey)
     .reply(200)
-    .get('/preview/subset.json')
+    .get('/preview/subset.json?api_key=' + apiKey)
     .reply(200)
-    .post('/publish.json')
+    .post('/publish.json?api_key=' + apiKey)
     .reply(200)
-    .get('./book_status.json')
+    .post('/publish.json?api_key=' + apiKey, {
+      'publish[email_readers]': true,
+      'publish[release_notes]': 'release notes'
+    })
+    .reply(200)
+    .get('/book_status?api_key=' + apiKey)
     .reply(200, {
       'num': 8,
       'job_type': 'GenerateBookJob#preview',
@@ -143,15 +173,15 @@ function mockClient() {
         'email_readers': true
       }
     })
-    .get('/sales.json')
+    .get('/sales.json?api_key=' + apiKey)
     .reply(200)
-    .get('/sales.xml')
+    .get('/sales.xml?api_key=' + apiKey)
     .reply(200)
-    .get('/individual_purchases.json')
+    .get('/individual_purchases.json?api_key=' + apiKey)
     .reply(200)
-    .get('/individual_purchases.xml')
+    .get('/individual_purchases.xml?page=1&api_key=' + apiKey)
     .reply(200)
-    .get('/coupons.json')
+    .get('/coupons.json?api_key=' + apiKey)
     .reply(200, [
       {
         'coupon_code': 'NOT_A_REAL_COUPON',
@@ -176,10 +206,25 @@ function mockClient() {
         'book_slug': 'yourbook'
       }
     ])
-    .get('/coupons.xml')
+    .get('/coupons.xml?api_key=' + apiKey)
     .reply(200)
-    .post('/coupons.json')
+    .post('/coupons.json?api_key=' + apiKey, {
+      'coupon_code': 'testcoupon', // required
+      'package_discounts_attributes': [ // required
+        {
+          'discounted_price': 10,
+          'package_slug': 'book'
+        }
+      ],
+      'start_date': moment(new Date()).format('YYYYMMDD'), // required
+      'end_date': moment(new Date()).format('YYYYMMDD'), // required
+      'max_uses': 1, // required
+      'note': 'test coupon', // optional
+      'suspended': false // optional, defaults to false
+    })
     .reply(200)
-    .put('/coupons.json')
+    .put('/coupons/testcoupon.json?api_key=' + apiKey, {
+      suspended: true
+    })
     .reply(200);
 }

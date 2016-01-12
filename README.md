@@ -41,11 +41,6 @@ client.previewFull(function(err, d) {
 
 There are a few ways to generate a preview version of your book:
 
-```bash
-curl -d "api_key=YOUR_API_KEY" https://leanpub.com/SLUG/preview.json # whole book
-curl -d "api_key=YOUR_API_KEY" https://leanpub.com/SLUG/preview/subset.json # Subset.txt
-```
-
 ```javascript
 ...
 
@@ -61,14 +56,6 @@ client.previewSubset(); // preview based on Subset.txt
 
 It is possible to publish a book silently or with email:
 
-```bash
-# publish without sending email
-curl -d "api_key=YOUR_API_KEY" https://leanpub.com/SLUG/publish.json
-
-# publish and send email
-curl -d "api_key=YOUR_API_KEY" -d "publish[email_readers]=true" -d "publish[release_notes]=please+let+me+know+what+you+think" https://leanpub.com/SLUG/publish.json
-```
-
 ```javascript
 ...
 
@@ -81,10 +68,6 @@ client.publish({
 ### Getting Job Status
 
 To know how your current job is progressing, use:
-
-```bash
-curl "https://leanpub.com/SLUG/book_status?api_key=YOUR_API_KEY"
-```
 
 ```javascript
 ...
@@ -102,11 +85,6 @@ client.jobStatus(function(err, d) {
 
 Leanpub provides both public and private (download urls etc.) information about books:
 
-```bash
-curl https://leanpub.com/SLUG.json
-curl https://leanpub.com/SLUG.json?api_key=YOUR_API_KEY # more info
-```
-
 ```javascript
 ...
 
@@ -123,12 +101,6 @@ client.bookSummary(function(err, d) {
 
 You can get book urls through summary information. These should be kept secret. You can book files like this:
 
-```bash
-curl -L https://leanpub.com/s/some-long-uuid.pdf > yourbook.pdf
-curl -L https://leanpub.com/s/some-long-uuid.epub > yourbook.epub
-curl -L https://leanpub.com/s/some-long-uuid.mobi > yourbook.mobi
-```
-
 ```javascript
 ...
 
@@ -140,62 +112,38 @@ curl -L https://leanpub.com/s/some-long-uuid.mobi > yourbook.mobi
 
 Sales data can be fetched in either JSON or XML like this:
 
-```bash
-curl https://leanpub.com/SLUG/sales.json?api_key=YOUR_API_KEY
-curl https://leanpub.com/SLUG/sales.xml?api_key=YOUR_API_KEY
-```
-
 ```javascript
 ...
 
-// defaults to json. accepts xml
-client.sales({format: 'xml'}, cb);
+client.sales({
+  format: 'xml' // defaults to json
+}, cb);
 ```
 
 Individual sales can be fetched like this:
 
-```bash
-curl https://leanpub.com/SLUG/individual_purchases.json?api_key=YOUR_API_KEY
-curl https://leanpub.com/SLUG/individual_purchases.json?api_key=YOUR_API_KEY&page=2
-```
-
 ```javascript
 ...
 
-// defaults to page 1, each page contains 50 sales
-client.individualSales({page: 2}, cb);
+client.individualSales({
+  format: 'xml', // defaults to json
+  page: 2 // defaults to page 1, each page contains 50 sales
+}, cb);
 ```
 
 ### Coupons
 
 Existing coupons can be fetched like this:
 
-```bash
-curl https://leanpub.com/SLUG/coupons.json?api_key=YOUR_API_KEY
-curl https://leanpub.com/SLUG/coupons.xml?api_key=YOUR_API_KEY
-```
-
 ```javascript
 ...
 
-// defaults to json. accepts xml
-client.coupons({format: 'xml'}, cb);
+client.coupons({
+  format: 'xml' // defaults to json
+}, cb);
 ```
 
 They can be created through `POST`:
-
-```bash
-curl -H "Content-Type: application/json" -X POST \
--d '{"coupon_code":"coupon-code-123456","package_discounts_attributes":[{"package_slug":"book","discounted_price":0.0}], \
-"start_date":"2013-12-28"}' "http://leanpub.com/SLUG/coupons.json?api_key=YOUR_API_KEY"
-
-# alternative
-curl -d "coupon[coupon_code]=coupon-code-123456" -d "coupon[discounted_price]=0.0" \
- -d "coupon[start_date]=2013-10-21" -d "api_key=YOUR_API_KEY" \
--d "coupon[package_discounts_attributes][][package_slug]=book"
--d "coupon[package_discounts_attributes][][discounted_price]=0.00"
-https://leanpub.com/SLUG/coupons.json
-```
 
 ```javascript
 ...
@@ -217,11 +165,6 @@ client.createCoupon({
 ```
 
 And updated through `PUT`:
-
-```bash
-curl -H "Content-Type: application/json" -XPUT -d '{"suspended":false}' \
-"https://leanpub.com/SLUG/coupons/some_coupon_code.json?api_key=YOUR_API_KEY"
-```
 
 ```javascript
 ...
