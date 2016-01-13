@@ -100,23 +100,24 @@ module.exports = function(o) {
         return cb(new Error('Missing `startDate`'));
       }
 
-      if(!endDate) {
-        return cb(new Error('Missing `endDate`'));
-      }
-
       if(!maxUses) {
         return cb(new Error('Missing `maxUses`'));
       }
 
-      req('post', '/coupons.json', {
+      const body = {
         'coupon_code': couponCode,
         'package_discounts_attributes': toUnderscore(packageDiscounts),
         'start_date': moment(startDate).format('YYYYMMDD'),
-        'end_date': moment(endDate).format('YYYYMMDD'),
         'max_uses': maxUses,
         'note': note,
         'suspended': suspended
-      }, cb);
+      };
+
+      if(endDate) {
+        body['end_date'] = moment(endDate).format('YYYYMMDD');
+      }
+
+      req('post', '/coupons.json', body, cb);
     },
     updateCoupon: function (o, cb) {
       const couponCode = o.couponCode;

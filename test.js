@@ -100,7 +100,23 @@ describe('Client', function () {
         }
       ],
       startDate: new Date(), // required
-      endDate: new Date(), // required
+      endDate: new Date(), // optional
+      maxUses: 1, // required
+      note: 'test coupon', // optional
+      suspended: false // optional, defaults to false
+    }, done);
+  });
+
+  it('should create coupons without endDate', function (done) {
+    client.createCoupon({
+      couponCode: 'testcoupon', // required
+      packageDiscounts: [ // required
+        {
+          discountedPrice: 10,
+          packageSlug: 'book'
+        }
+      ],
+      startDate: new Date(), // required
       maxUses: 1, // required
       note: 'test coupon', // optional
       suspended: false // optional, defaults to false
@@ -217,7 +233,21 @@ function mockClient(apiKey) {
         }
       ],
       'start_date': moment(new Date()).format('YYYYMMDD'), // required
-      'end_date': moment(new Date()).format('YYYYMMDD'), // required
+      'end_date': moment(new Date()).format('YYYYMMDD'), // optional
+      'max_uses': 1, // required
+      'note': 'test coupon', // optional
+      'suspended': false // optional, defaults to false
+    })
+    .reply(200)
+    .post('/coupons.json?api_key=' + apiKey, {
+      'coupon_code': 'testcoupon', // required
+      'package_discounts_attributes': [ // required
+        {
+          'discounted_price': 10,
+          'package_slug': 'book'
+        }
+      ],
+      'start_date': moment(new Date()).format('YYYYMMDD'), // required
       'max_uses': 1, // required
       'note': 'test coupon', // optional
       'suspended': false // optional, defaults to false

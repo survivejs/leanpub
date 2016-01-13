@@ -157,7 +157,7 @@ client.createCoupon({
     }
   ],
   startDate: new Date(), // required
-  endDate: new Date(), // required
+  endDate: new Date(), // optional
   maxUses: 1, // required
   note: 'test coupon', // optional
   suspended: false // optional, defaults to false
