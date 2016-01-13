@@ -79,42 +79,34 @@ module.exports = function(o) {
       req('get', '/coupons.' + format, {}, cb);
     },
     createCoupon: function (o, cb) {
-      const couponCode = o.couponCode;
-      const packageDiscounts = o.packageDiscounts;
-      const startDate = o.startDate;
-      const endDate = o.endDate;
-      const maxUses = o.maxUses;
-      const note = o.note;
-      const suspended = o.suspended;
-
       // TODO: tidy up this logic
-      if(!couponCode) {
+      if(!o.couponCode) {
         return cb(new Error('Missing `couponCode`'));
       }
 
-      if(!packageDiscounts) {
+      if(!o.packageDiscounts) {
         return cb(new Error('Missing `packageDiscounts`'));
       }
 
-      if(!startDate) {
+      if(!o.startDate) {
         return cb(new Error('Missing `startDate`'));
       }
 
-      if(!maxUses) {
+      if(!o.maxUses) {
         return cb(new Error('Missing `maxUses`'));
       }
 
       const body = {
-        'coupon_code': couponCode,
-        'package_discounts_attributes': toUnderscore(packageDiscounts),
-        'start_date': leanpubDate(startDate),
-        'max_uses': maxUses,
-        'note': note,
-        'suspended': suspended
+        'coupon_code': o.couponCode,
+        'package_discounts_attributes': toUnderscore(o.packageDiscounts),
+        'start_date': leanpubDate(o.startDate),
+        'max_uses': o.maxUses,
+        'note': o.note,
+        'suspended': o.suspended
       };
 
-      if(endDate) {
-        body['end_date'] = leanpubDate(endDate);
+      if(o.endDate) {
+        body['end_date'] = leanpubDate(o.endDate);
       }
 
       req('post', '/coupons.json', body, cb);
