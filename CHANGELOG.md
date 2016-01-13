@@ -1,3 +1,8 @@
+0.1.2 / 2015-01-13
+==================
+
+  * Bug fix - Use Leanpub date format (YYYY-MM-DD instead of YYYYMMDD) for date fields.
+
 0.1.1 / 2015-01-13
 ==================
 
