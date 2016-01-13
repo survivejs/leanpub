@@ -1,3 +1,8 @@
+0.1.3 / 2015-01-13
+==================
+
+  * Bug fix - Improve `updateCoupon` handling. Now `suspended` should allow both boolean values.
+
 0.1.2 / 2015-01-13
 ==================
 
