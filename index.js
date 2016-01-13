@@ -107,14 +107,14 @@ module.exports = function(o) {
       const body = {
         'coupon_code': couponCode,
         'package_discounts_attributes': toUnderscore(packageDiscounts),
-        'start_date': moment(startDate).format('YYYYMMDD'),
+        'start_date': leanpubDate(startDate),
         'max_uses': maxUses,
         'note': note,
         'suspended': suspended
       };
 
       if(endDate) {
-        body['end_date'] = moment(endDate).format('YYYYMMDD');
+        body['end_date'] = leanpubDate(endDate);
       }
 
       req('post', '/coupons.json', body, cb);
@@ -139,11 +139,11 @@ module.exports = function(o) {
       }
 
       if(startDate) {
-        body['start_date'] = moment(startDate).format('YYYYMMDD');
+        body['start_date'] = leanpubDate(startDate);
       }
 
       if(endDate) {
-        body['end_date'] = moment(endDate).format('YYYYMMDD');
+        body['end_date'] = leanpubDate(endDate);
       }
 
       if(maxUses) {
@@ -161,6 +161,10 @@ module.exports = function(o) {
       req('put', '/coupons/' + couponCode + '.json', body, cb);
     }
   };
+
+  function leanpubDate(date) {
+    return moment(date).format('YYYY-MM-DD');
+  }
 
   function toUnderscore(discounts) {
     return (discounts || []).map(function(discount) {

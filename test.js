@@ -232,8 +232,8 @@ function mockClient(apiKey) {
           'package_slug': 'book'
         }
       ],
-      'start_date': moment(new Date()).format('YYYYMMDD'), // required
-      'end_date': moment(new Date()).format('YYYYMMDD'), // optional
+      'start_date': moment(new Date()).format('YYYY-MM-DD'), // required
+      'end_date': moment(new Date()).format('YYYY-MM-DD'), // optional
       'max_uses': 1, // required
       'note': 'test coupon', // optional
       'suspended': false // optional, defaults to false
@@ -247,7 +247,7 @@ function mockClient(apiKey) {
           'package_slug': 'book'
         }
       ],
-      'start_date': moment(new Date()).format('YYYYMMDD'), // required
+      'start_date': moment(new Date()).format('YYYY-MM-DD'), // required
       'max_uses': 1, // required
       'note': 'test coupon', // optional
       'suspended': false // optional, defaults to false
