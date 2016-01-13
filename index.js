@@ -121,12 +121,6 @@ module.exports = function(o) {
     },
     updateCoupon: function (o, cb) {
       const couponCode = o.couponCode;
-      const packageDiscounts = o.packageDiscounts;
-      const startDate = o.startDate;
-      const endDate = o.endDate;
-      const maxUses = o.maxUses;
-      const note = o.note;
-      const suspended = o.suspended;
       const body = {};
 
       // TODO: tidy up this logic
@@ -134,28 +128,28 @@ module.exports = function(o) {
         return cb(new Error('Missing `couponCode`'));
       }
 
-      if(packageDiscounts) {
-        body['package_discounts_attributes'] = toUnderscore(packageDiscounts);
+      if('packageDiscounts' in o) {
+        body['package_discounts_attributes'] = toUnderscore(o.packageDiscounts);
       }
 
-      if(startDate) {
-        body['start_date'] = leanpubDate(startDate);
+      if('startDate' in o) {
+        body['start_date'] = leanpubDate(o.startDate);
       }
 
-      if(endDate) {
-        body['end_date'] = leanpubDate(endDate);
+      if('endDate' in o) {
+        body['end_date'] = leanpubDate(o.endDate);
       }
 
-      if(maxUses) {
-        body['max_uses'] = maxUses;
+      if('maxUses' in o) {
+        body['max_uses'] = o.maxUses;
       }
 
-      if(note) {
-        body['note'] = note;
+      if('note' in o) {
+        body['note'] = o.note;
       }
 
-      if(suspended) {
-        body['suspended'] = suspended;
+      if('suspended' in o) {
+        body['suspended'] = o.suspended;
       }
 
       req('put', '/coupons/' + couponCode + '.json', body, cb);
