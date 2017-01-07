@@ -13,10 +13,10 @@ module.exports = function(o) {
 
   return {
     previewFull: function (cb) {
-      req('get', '/preview.json', {}, cb);
+      req('post', '/preview.json', {}, cb);
     },
     previewSubset: function (cb) {
-      req('get', '/preview/subset.json', {}, cb);
+      req('post', '/preview/subset.json', {}, cb);
     },
     publish: function (o, cb) {
       if(!cb) {

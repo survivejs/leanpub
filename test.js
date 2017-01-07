@@ -161,9 +161,9 @@ function mockClient(apiKey) {
       'epub_published_url': 'http://leanpub.com/s/another-redacted-string.epub',
       'mobi_published_url': 'http://leanpub.com/s/another-redacted-string.mobi'
     })
-    .get('/preview.json?api_key=' + apiKey)
+    .post('/preview.json?api_key=' + apiKey)
     .reply(200)
-    .get('/preview/subset.json?api_key=' + apiKey)
+    .post('/preview/subset.json?api_key=' + apiKey)
     .reply(200)
     .post('/publish.json?api_key=' + apiKey)
     .reply(200)
